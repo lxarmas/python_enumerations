@@ -1,0 +1,57 @@
+Enumerations
+An enumeration in python is like a function that takes a list and returns the elements of the list, with each element marked with its location.
+
+Assume we have:
+
+values = ["a" ,"b" ,"c"]
+
+and assume we have
+
+index=0
+then the following loop
+
+for value in values:
+      print(index, value)
+      index += 1
+
+gives this output:
+
+0 a
+1 b
+2 c
+
+The enumerate function creates those indices with the values combination as shown below:
+
+ for count, value in enumerate(values):  #count will be the index of the first item in values, then the index of the second and so on
+     print(count, value)
+
+You get this output:
+0 a
+1 b
+2 c
+
+This is useful if you, for example, have a list of values to print, so those values are the y-axis, but then you need to create the x-axis values say 0,1,2,3...
+Here is an example:
+
+movies = ["Annie Hall", "Ben-Hur", "Casablanca", "Gandhi", "West Side Story"] #each is a label for the x-axis
+num_oscars = [5, 11, 3, 8, 10] #those are the y values we need to mark
+
+# bars are by default width 0.8, so we'll add 0.1 to the left coordinates
+# this is done by adding 0.1 to each of the first of the enumeration pair values.
+# otherwise the first x value comes to be at 0.
+
+xs = [i + 0.1 for i, _ in enumerate(movies)]
+
+# in the above, the enumerate function returns a list of 0,"Annie Hall" , 1,"Ben-Hur", 2, "Casablanca" and so on
+# The 0,1,2,...are saved into variable i. Since we have the movie names in the variable movies, we don't care to re-create that, hence we used _
+# The _ usually means hidden variable, and in this case, we are simply saying we will not use _
+# All of the i's + 0.1 created are saved into a list, hence the [ ], and that list is saved into variable xs
+
+# The rest of the code is from the PDF file
+# plot bars with left x-coordinates [xs], heights [num_oscars]
+plt.bar(xs, num_oscars)
+plt.ylabel("# of Academy Awards")
+plt.title("My Favorite Movies")
+plt.xticks([i + 0.5 for i, _ in enumerate(movies)], movies)
+# label x-axis movie names
+plt.show()
