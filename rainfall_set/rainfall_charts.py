@@ -24,46 +24,46 @@ def read_rainfall(file_path):
     rainfall = {}
 
     with file_path.open("r", encoding="utf-8-sig") as rainfall_file:
-        for line_number, line in enumerate(rainfall_file, start=1):
-            line = line.strip()
+        for line_num, line_text in enumerate(rainfall_file, start=1):
+            line_text = line_text.strip()
 
-            # Ignore empty lines.
-            if not line:
+            # Ignore empty lines_text.
+            if not line_text:
                 continue
 
             # Separate the location name from the rainfall value.
-            parts = line.rsplit(maxsplit=1)
+            separator = line_text.rsplit(maxsplit=1)
 
-            if len(parts) != 2:
+            if len(separator) != 2:
                 raise ValueError(
-                    f"{file_path.name}, line {line_number}: "
+                    f"{file_path.name}, line_text {line_num}: "
                     "expected a location name and a rainfall value."
                 )
 
-            # Unpack the two parts into variables.
-            location, rainfall_text = parts
+            # Unpack the two separator parts into variables.
+            location, location_text = separator
 
             # Assume these two spellings refer to the same location.
             if location == "Adina":
                 location = "Adine"
 
             try:
-                amount = float(rainfall_text)
+                amount = float(location_text)
             except ValueError as error:
                 raise ValueError(
-                    f"{file_path.name}, line {line_number}: "
-                    f"invalid rainfall value '{rainfall_text}'."
+                    f"{file_path.name}, line_text {line_num}: "
+                    f"invalid rainfall value '{location_text}'."
                 ) from error
 
             if amount < 0:
                 raise ValueError(
-                    f"{file_path.name}, line {line_number}: "
+                    f"{file_path.name}, line_text {line_num}: "
                     "rainfall cannot be negative."
                 )
 
             if location in rainfall:
                 raise ValueError(
-                    f"{file_path.name}, line {line_number}: "
+                    f"{file_path.name}, line_text {line_num}: "
                     f"duplicate location '{location}'."
                 )
 
@@ -129,7 +129,7 @@ def draw_comparison(ax, locations, setbefore, setafter):
         setafter_positions,
         setafter_values,
         width=width,
-        color="limegreen",
+        color="red",
         label="Set_after_ten_years: later period",
     )
 
@@ -157,7 +157,7 @@ def draw_single_set(ax, locations, rainfall, set_name, color, upper_limit):
     ax.scatter(
         min_position,
         rainfall[min_location],
-        color="hotpink",
+        color="crimson",
         marker="v",
         s=110,
         zorder=3,
@@ -167,7 +167,7 @@ def draw_single_set(ax, locations, rainfall, set_name, color, upper_limit):
     ax.scatter(
         max_position,
         rainfall[max_location],
-        color="lavender",
+        color="royalblue",
         marker="^",
         s=110,
         zorder=3,
@@ -176,8 +176,8 @@ def draw_single_set(ax, locations, rainfall, set_name, color, upper_limit):
 
     # Add text near each highlighted point.
     for location, position, description, text_color in [
-        (min_location, min_position, "min", "hotpink"),
-        (max_location, max_position, "max", "lavender"),
+        (min_location, min_position, "min", "crimson"),
+        (max_location, max_position, "max", "royalblue"),
     ]:
         ax.annotate(
             f"{description}: {rainfall[location]:.2f}",
@@ -207,11 +207,13 @@ def draw_extremes(ax, setbefore, setafter):
     min_location2, max_location2 = find_extremes(setafter)
 
     labels = [
-        f"min-{min_location1}-Set_before_ten_years",
-        f"max-{max_location1}-Set_before_ten_years",
-        f"min-{min_location2}-Set_after_ten_years",
-        f"max-{max_location2}-Set_after_ten_years",
-    ]
+       
+    f"min-{min_location1}-Set1",
+    f"max-{max_location1}-Set1",
+    f"min-{min_location2}-Set2",
+    f"max-{max_location2}-Set2",
+]
+    
 
     values = [
         setbefore[min_location1],
@@ -220,7 +222,7 @@ def draw_extremes(ax, setbefore, setafter):
         setafter[max_location2],
     ]
 
-    colors = ["hotpink", "lavender", "hotpink", "lavender"]
+    colors = ["crimson", "royalblue", "crimson", "royalblue"]
     positions = list(range(len(labels)))
 
     ax.scatter(
@@ -267,7 +269,7 @@ def draw_changes(ax, locations, setbefore, setafter):
     ]
 
     colors = [
-        "hotpink" if change < 0 else "limegreen"
+        "blue" if change < 0 else "darkblue"
         for change in changes
     ]
 
@@ -278,7 +280,7 @@ def draw_changes(ax, locations, setbefore, setafter):
     ax.axvline(0, color="blue", linewidth=1)
 
     ax.set_title(
-        "Rainfall Change by Location: "
+        "Rainfall Changes by Location: "
         "Set_after_ten_years Minus Set_before_ten_years"
     )
     ax.set_xlabel("Change in rainfall (inches): negative = decrease")
@@ -358,7 +360,7 @@ def main():
         locations,
         setafter,
         "Set_after_ten_years: Later Period",
-        "limegreen",
+        "yellow",
         upper_limit,
     )
     save_chart(
@@ -394,18 +396,18 @@ if __name__ == "__main__":
 
 
 # Conclusion:
-# Based on the reported results, rainfall increased at all 26
-# matched locations.
+# Based on results, rainfall increased at all 26
+# matched locations after the earlier period.
 #
-# The earlier dataset has its minimum at Cascade (5.48 inches)
+# The earlier dataset(1) has its minimum at Cascade (5.48 inches)
 # and its maximum at Bloomfield (38.02 inches).
 #
-# The later dataset has its minimum at Adine (30.32 inches)
+# The later dataset(2) has its minimum at Adine (30.32 inches)
 # and its maximum at Bloomfield (96.57 inches).
 #
 # This comparison assumes that "Adina" and "Adine" refer to the
 # same location and that both datasets use inches and represent
 # comparable rainfall measurements.
 #
-# These datasets do not show individual yearly changes or
-# establish the cause of the differences.
+# These datasets are incomplete and do not show individual annual changes or determine
+# the cause of the differences.
